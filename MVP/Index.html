@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codestep — IT курстары платформасы</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: #0e6e7e;
+      --teal-dark: #094f5c;
+      --teal-light: #1a9fb5;
+      --accent: #f5a623;
+      --accent2: #e8f4f8;
+      --bg: #f0f6f9;
+      --white: #ffffff;
+      --text: #1a2a30;
+      --text-muted: #4a6a78;
+      --green-soft: #d6ead6;
+      --red-soft: #fde8e8;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+    /* ===== NAV ===== */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:16px 5%;background:rgba(9,79,92,0.97);backdrop-filter:blur(10px);box-shadow:0 2px 20px rgba(0,0,0,.18)}
+    .nav-logo{display:flex;align-items:center;gap:12px;font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;color:#fff;text-decoration:none;cursor:pointer}
+    .nav-logo svg{width:36px;height:36px}
+    .nav-links{display:flex;gap:28px;align-items:center}
+    .nav-links a{color:rgba(255,255,255,.82);text-decoration:none;font-size:0.88rem;font-weight:500;letter-spacing:.02em;transition:color .2s;cursor:pointer}
+    .nav-links a:hover,.nav-links a.active{color:var(--accent)}
+    .nav-cta{background:var(--accent);color:var(--teal-dark)!important;padding:8px 22px;border-radius:50px;font-weight:700!important;transition:transform .2s,box-shadow .2s!important}
+    .nav-cta:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,166,35,.45)}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+    .hamburger span{width:24px;height:2px;background:#fff;border-radius:2px;transition:all .3s}
+
+    /* ===== PAGES ===== */
+    .page{display:none;min-height:100vh;padding-top:72px}
+    .page.active{display:block}
+
+    /* ===== HERO ===== */
+    .hero{min-height:calc(100vh - 72px);background:linear-gradient(135deg,var(--teal-dark) 0%,var(--teal) 50%,#1a9fb5 100%);display:flex;align-items:center;padding:60px 5% 60px;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;top:-80px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(245,166,35,.18) 0%,transparent 70%)}
+    .hero::after{content:'';position:absolute;bottom:-40px;left:30%;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.06) 0%,transparent 70%)}
+    .hero-content{max-width:620px;position:relative;z-index:2}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24);color:#fff;padding:6px 16px;border-radius:50px;font-size:.8rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;margin-bottom:24px}
+    .hero-badge span{width:6px;height:6px;background:var(--accent);border-radius:50%}
+    .hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.6rem,5.5vw,4.2rem);font-weight:800;color:#fff;line-height:1.1;margin-bottom:22px;letter-spacing:-.02em}
+    .hero h1 em{color:var(--accent);font-style:normal}
+    .hero p{font-size:1.08rem;color:rgba(255,255,255,.82);line-height:1.7;margin-bottom:36px;max-width:500px}
+    .hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+    .btn-primary{background:var(--accent);color:var(--teal-dark);padding:14px 32px;border-radius:50px;font-weight:700;font-size:1rem;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 20px rgba(245,166,35,.4);cursor:pointer;border:none;display:inline-block}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(245,166,35,.5)}
+    .btn-outline{border:2px solid rgba(255,255,255,.5);color:#fff;padding:14px 32px;border-radius:50px;font-weight:600;font-size:1rem;text-decoration:none;transition:all .2s;cursor:pointer;background:none;display:inline-block}
+    .btn-outline:hover{border-color:#fff;background:rgba(255,255,255,.1)}
+    .hero-stats{position:absolute;right:5%;top:50%;transform:translateY(-50%);z-index:2;display:flex;flex-direction:column;gap:14px}
+    .stat-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(10px);border-radius:16px;padding:14px 22px;color:#fff;min-width:175px}
+    .stat-card .num{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;color:var(--accent);line-height:1}
+    .stat-card .label{font-size:.8rem;opacity:.75;margin-top:4px}
+
+    /* ===== TRUST BAR ===== */
+    .trust-bar{background:var(--white);padding:28px 5%;display:flex;align-items:center;justify-content:center;gap:40px;border-bottom:1px solid #e0ecf1;flex-wrap:wrap}
+    .trust-item{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--text-muted);font-weight:500}
+    .trust-item span{font-size:1.4rem}
+
+    /* ===== SECTIONS ===== */
+    section{padding:80px 5%}
+    .section-tag{display:inline-block;background:var(--teal);color:#fff;padding:4px 14px;border-radius:50px;font-size:.76rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+    h2{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,4vw,2.7rem);font-weight:800;letter-spacing:-.02em;margin-bottom:14px;color:var(--teal-dark);line-height:1.15}
+    .subtitle{font-size:1.02rem;color:var(--text-muted);max-width:580px;line-height:1.7}
+
+    /* ===== КУРСТАР КАТАЛОГЫ ===== */
+    .courses-filters{display:flex;gap:10px;flex-wrap:wrap;margin:32px 0 36px}
+    .filter-btn{padding:8px 20px;border-radius:50px;border:2px solid var(--teal-light);background:transparent;color:var(--teal-dark);font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+    .filter-btn.active,.filter-btn:hover{background:var(--teal);color:#fff;border-color:var(--teal)}
+    .courses-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+    .course-card{background:var(--white);border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.07);transition:transform .25s,box-shadow .25s;cursor:pointer}
+    .course-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(14,110,126,.14)}
+    .course-thumb{height:160px;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative}
+    .course-thumb.python{background:linear-gradient(135deg,#1e3a5f,#2980b9)}
+    .course-thumb.sql{background:linear-gradient(135deg,#1a5c3a,#27ae60)}
+    .course-thumb.data{background:linear-gradient(135deg,#4a1a6e,#8e44ad)}
+    .course-thumb.web{background:linear-gradient(135deg,#7a2828,#e74c3c)}
+    .course-thumb.excel{background:linear-gradient(135deg,#1a5c2a,#2ecc71)}
+    .course-thumb.ai{background:linear-gradient(135deg,#094f5c,#1a9fb5)}
+    .course-badge{position:absolute;top:12px;left:12px;background:var(--accent);color:var(--teal-dark);padding:4px 10px;border-radius:50px;font-size:.72rem;font-weight:700}
+    .course-badge.new{background:#e74c3c;color:#fff}
+    .course-badge.hot{background:#e67e22;color:#fff}
+    .course-body{padding:22px}
+    .course-level{font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--teal-light);margin-bottom:6px}
+    .course-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--teal-dark);margin-bottom:8px;line-height:1.3}
+    .course-desc{font-size:.83rem;color:var(--text-muted);line-height:1.55;margin-bottom:14px}
+    .course-meta{display:flex;gap:14px;font-size:.78rem;color:var(--text-muted);margin-bottom:16px}
+    .course-meta span{display:flex;align-items:center;gap:4px}
+    .course-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--bg)}
+    .course-price{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--teal-dark)}
+    .course-price .old-price{font-size:.8rem;color:#aaa;text-decoration:line-through;font-weight:400;font-family:'DM Sans',sans-serif;margin-right:6px}
+    .course-enroll{background:var(--teal);color:#fff;padding:8px 18px;border-radius:50px;font-size:.82rem;font-weight:700;border:none;cursor:pointer;transition:background .2s}
+    .course-enroll:hover{background:var(--teal-dark)}
+    .stars{color:#f5a623;font-size:.85rem}
+
+    /* ===== HOW IT WORKS ===== */
+    .how{background:var(--white)}
+    .steps-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:52px;position:relative}
+    .steps-row::before{content:'';position:absolute;top:40px;left:12.5%;right:12.5%;height:2px;background:linear-gradient(90deg,var(--teal-light),var(--accent));z-index:0}
+    .step-item{text-align:center;position:relative;z-index:1;padding:0 12px}
+    .step-circle{width:80px;height:80px;border-radius:50%;background:var(--white);border:3px solid var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 20px;box-shadow:0 4px 16px rgba(14,110,126,.15)}
+    .step-num-label{font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;color:var(--teal-light);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+    .step-item h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:var(--teal-dark);margin-bottom:6px}
+    .step-item p{font-size:.8rem;color:var(--text-muted);line-height:1.55}
+
+    /* ===== PRICING ===== */
+    .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+    .price-card{background:var(--white);border-radius:24px;padding:36px 32px;border:2px solid transparent;transition:all .25s;position:relative;overflow:hidden}
+    .price-card:hover{transform:translateY(-4px)}
+    .price-card.popular{border-color:var(--teal);box-shadow:0 8px 40px rgba(14,110,126,.18)}
+    .price-card.popular::before{content:'⭐ Танымалы';position:absolute;top:0;right:0;background:var(--teal);color:#fff;padding:6px 18px;font-size:.72rem;font-weight:700;border-radius:0 0 0 16px;letter-spacing:.04em}
+    .price-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--teal-dark);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
+    .price-desc{font-size:.82rem;color:var(--text-muted);margin-bottom:24px}
+    .price-amount{font-family:'Syne',sans-serif;font-size:2.8rem;font-weight:800;color:var(--teal-dark);line-height:1;margin-bottom:4px}
+    .price-amount sup{font-size:1rem}
+    .price-period{font-size:.82rem;color:var(--text-muted);margin-bottom:28px}
+    .price-features{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
+    .price-features li{display:flex;gap:10px;align-items:flex-start;font-size:.87rem;color:var(--text-muted)}
+    .price-features li::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0}
+    .price-features li.no::before{content:'✗';color:#ccc}
+    .price-features li.no{color:#bbb}
+    .btn-price{width:100%;padding:13px;border-radius:50px;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .2s;border:2px solid var(--teal);font-family:'DM Sans',sans-serif}
+    .btn-price.solid{background:var(--teal);color:#fff}
+    .btn-price.solid:hover{background:var(--teal-dark)}
+    .btn-price.ghost{background:transparent;color:var(--teal)}
+    .btn-price.ghost:hover{background:var(--teal);color:#fff}
+
+    /* ===== TESTIMONIALS ===== */
+    .reviews{background:var(--white)}
+    .reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+    .review-card{background:var(--bg);border-radius:20px;padding:28px;border-left:4px solid var(--teal-light)}
+    .review-stars{color:var(--accent);margin-bottom:10px;font-size:1rem}
+    .review-text{font-size:.88rem;color:var(--text);line-height:1.65;margin-bottom:18px;font-style:italic}
+    .reviewer{display:flex;align-items:center;gap:12px}
+    .reviewer-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--accent));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .reviewer-name{font-weight:700;font-size:.88rem;color:var(--teal-dark)}
+    .reviewer-role{font-size:.75rem;color:var(--text-muted)}
+
+    /* ===== INSTRUCTORS ===== */
+    .instructors{background:var(--bg)}
+    .instructors-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+    .instructor-card{background:var(--white);border-radius:20px;padding:28px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.07)}
+    .instructor-avatar{width:90px;height:90px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(135deg,var(--teal-dark),var(--teal-light));display:flex;align-items:center;justify-content:center;font-size:2.4rem;border:3px solid var(--accent2)}
+    .instructor-name{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--teal-dark);margin-bottom:4px}
+    .instructor-title{font-size:.82rem;color:var(--teal-light);font-weight:600;margin-bottom:10px}
+    .instructor-bio{font-size:.82rem;color:var(--text-muted);line-height:1.55;margin-bottom:14px}
+    .instructor-stats{display:flex;justify-content:center;gap:20px;padding-top:14px;border-top:1px solid var(--bg)}
+    .instructor-stat span{display:block;font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--teal-dark)}
+    .instructor-stat p{font-size:.72rem;color:var(--text-muted)}
+
+    /* ===== FAQ ===== */
+    .faq{background:var(--white)}
+    .faq-list{max-width:760px;margin:48px auto 0;display:flex;flex-direction:column;gap:12px}
+    .faq-item{background:var(--bg);border-radius:16px;overflow:hidden}
+    .faq-q{padding:20px 24px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-weight:600;font-size:.95rem;color:var(--teal-dark)}
+    .faq-q .arrow{transition:transform .3s;font-size:1.1rem;color:var(--teal)}
+    .faq-item.open .arrow{transform:rotate(180deg)}
+    .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;font-size:.88rem;color:var(--text-muted);line-height:1.7;padding:0 24px}
+    .faq-item.open .faq-a{max-height:200px;padding:0 24px 20px}
+
+    /* ===== NEWSLETTER / CTA ===== */
+    .cta-section{background:linear-gradient(135deg,var(--teal-dark),var(--teal));padding:90px 5%;text-align:center;color:#fff}
+    .cta-section h2{color:#fff;margin-bottom:16px}
+    .cta-section p{font-size:1.05rem;opacity:.82;margin-bottom:36px;max-width:540px;margin-left:auto;margin-right:auto}
+    .cta-form{display:flex;gap:12px;max-width:480px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+    .cta-input{flex:1;min-width:220px;padding:14px 20px;border-radius:50px;border:none;font-size:.95rem;font-family:'DM Sans',sans-serif;background:rgba(255,255,255,.15);color:#fff;outline:none;border:1px solid rgba(255,255,255,.3)}
+    .cta-input::placeholder{color:rgba(255,255,255,.6)}
+    .cta-input:focus{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.6)}
+
+    /* ===== ABOUT PAGE ===== */
+    .about-hero{background:linear-gradient(135deg,var(--teal-dark),var(--teal-light));padding:70px 5%;color:#fff;text-align:center}
+    .about-hero h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;margin-bottom:16px}
+    .about-hero p{font-size:1.05rem;opacity:.85;max-width:560px;margin:0 auto}
+    .about-section{background:var(--white);padding:70px 5%}
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:48px}
+    .value-list{display:flex;flex-direction:column;gap:20px;margin-top:24px}
+    .value-item{display:flex;gap:16px;align-items:flex-start;padding:18px;background:var(--bg);border-radius:16px;border-left:4px solid var(--teal)}
+    .value-icon{width:42px;height:42px;background:var(--teal);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.2rem}
+    .value-item h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:var(--teal-dark);margin-bottom:4px}
+    .value-item p{font-size:.84rem;color:var(--text-muted);line-height:1.6}
+    .about-visual{background:linear-gradient(135deg,var(--teal-dark),var(--teal-light));border-radius:24px;padding:36px;color:#fff}
+    .about-visual h3{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:20px}
+    .feature-pills{display:flex;flex-direction:column;gap:10px}
+    .pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px}
+    .pill-dot{width:8px;height:8px;background:var(--accent);border-radius:50%;flex-shrink:0}
+    .pill span{font-size:.87rem;line-height:1.4}
+
+    /* ===== STATS SECTION ===== */
+    .stats-section{background:var(--bg);padding:60px 5%}
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:0}
+    .stat-big{background:var(--white);border-radius:20px;padding:28px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+    .stat-big .num{font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;color:var(--teal);line-height:1;margin-bottom:6px}
+    .stat-big p{font-size:.84rem;color:var(--text-muted)}
+
+    /* ===== CONTACT PAGE ===== */
+    .contact-page{background:var(--bg);padding:70px 5%;min-height:calc(100vh - 72px)}
+    .contact-page h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:800;color:var(--teal-dark);margin-bottom:10px}
+    .contact-page .subtitle{margin-bottom:48px}
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+    .contact-form{background:var(--white);border-radius:24px;padding:40px;box-shadow:0 8px 32px rgba(0,0,0,.08)}
+    .form-group{margin-bottom:20px}
+    .form-group label{display:block;font-size:.85rem;font-weight:600;color:var(--teal-dark);margin-bottom:6px}
+    .form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 16px;border:2px solid #d0e6ec;border-radius:12px;font-size:.9rem;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--teal);background:#fff}
+    .form-group textarea{resize:vertical;min-height:100px}
+    .form-submit{width:100%;padding:14px;background:var(--teal);color:#fff;border:none;border-radius:50px;font-size:1rem;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background .2s}
+    .form-submit:hover{background:var(--teal-dark)}
+    .contact-info{display:flex;flex-direction:column;gap:24px}
+    .contact-info-card{background:var(--white);border-radius:20px;padding:28px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+    .contact-info-card h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--teal-dark);margin-bottom:12px}
+    .contact-detail{display:flex;align-items:center;gap:12px;font-size:.87rem;color:var(--text-muted);margin-bottom:10px}
+    .contact-detail span{font-size:1.2rem}
+    .social-links{display:flex;gap:12px;margin-top:4px}
+    .social-link{width:40px;height:40px;border-radius:50%;background:var(--bg);border:2px solid var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:1.1rem;text-decoration:none;transition:all .2s;cursor:pointer}
+    .social-link:hover{background:var(--teal);border-color:var(--teal)}
+
+    /* ===== MODAL ===== */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(9,79,92,.6);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--white);border-radius:24px;padding:40px;max-width:460px;width:90%;position:relative;animation:modalIn .3s ease}
+    @keyframes modalIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+    .modal-close{position:absolute;top:16px;right:20px;font-size:1.4rem;cursor:pointer;color:var(--text-muted);background:none;border:none;line-height:1}
+    .modal-close:hover{color:var(--teal-dark)}
+    .modal h2{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--teal-dark);margin-bottom:6px}
+    .modal .course-info-badge{background:var(--teal);color:#fff;padding:3px 12px;border-radius:50px;font-size:.75rem;font-weight:600;display:inline-block;margin-bottom:16px}
+    .modal p{font-size:.87rem;color:var(--text-muted);margin-bottom:20px;line-height:1.6}
+    .modal .price-tag{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--teal-dark);margin-bottom:4px}
+    .modal .price-tag .old{font-size:1rem;color:#aaa;text-decoration:line-through;font-weight:400;font-family:'DM Sans',sans-serif;margin-right:8px}
+    .modal-actions{display:flex;gap:12px;margin-top:24px}
+    .modal-actions .btn-primary{flex:1;text-align:center;padding:13px}
+    .modal-actions .btn-outline2{flex:1;text-align:center;padding:12px;border-radius:50px;border:2px solid var(--teal);color:var(--teal);font-weight:600;cursor:pointer;background:none;font-size:.95rem;font-family:'DM Sans',sans-serif;transition:all .2s}
+    .modal-actions .btn-outline2:hover{background:var(--teal);color:#fff}
+
+    /* ===== TOAST ===== */
+    .toast{position:fixed;bottom:30px;right:30px;background:var(--teal-dark);color:#fff;padding:14px 24px;border-radius:12px;font-size:.88rem;font-weight:500;z-index:400;transform:translateY(100px);opacity:0;transition:all .4s;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+    .toast.show{transform:translateY(0);opacity:1}
+
+    /* ===== FOOTER ===== */
+    .footer{background:var(--teal-dark);color:rgba(255,255,255,.7);padding:48px 5% 28px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:36px}
+    .footer-brand .nav-logo{margin-bottom:14px;display:inline-flex}
+    .footer-brand p{font-size:.83rem;line-height:1.65;max-width:260px;color:rgba(255,255,255,.55)}
+    .footer-col h4{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
+    .footer-col a{display:block;font-size:.82rem;color:rgba(255,255,255,.55);text-decoration:none;margin-bottom:8px;cursor:pointer;transition:color .2s}
+    .footer-col a:hover{color:var(--accent)}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:20px;display:flex;justify-content:space-between;align-items:center;font-size:.8rem}
+    .footer-logo-text{font-family:'Syne',sans-serif;font-weight:800;color:#fff;font-size:1rem}
+
+    /* ===== ANIMATIONS ===== */
+    .fade-in{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+    .fade-in.visible{opacity:1;transform:translateY(0)}
+
+    /* ===== RESPONSIVE ===== */
+    @media(max-width:1000px){
+      .courses-grid,.pricing-grid,.reviews-grid,.instructors-grid{grid-template-columns:1fr 1fr}
+      .steps-row{grid-template-columns:1fr 1fr;gap:24px}.steps-row::before{display:none}
+      .footer-grid{grid-template-columns:1fr 1fr;gap:28px}
+      .about-grid,.contact-grid{grid-template-columns:1fr}
+      .stats-row{grid-template-columns:1fr 1fr}
+      .hero-stats{display:none}
+    }
+    @media(max-width:680px){
+      .courses-grid,.pricing-grid,.reviews-grid,.instructors-grid,.steps-row,.stats-row{grid-template-columns:1fr}
+      .hamburger{display:flex}
+      .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--teal-dark);flex-direction:column;padding:20px 5%;gap:0}
+      .nav-links.open{display:flex}
+      .nav-links a{padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.95rem}
+      .footer-grid{grid-template-columns:1fr}
+      .cta-form{flex-direction:column}
+      .cta-input{min-width:auto;width:100%}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" onclick="showPage('home')">
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="19" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+      <path d="M12 16 L8 20 L12 24" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M28 16 L32 20 L28 24" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M22 12 L18 28" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    CODESTEP
+  </a>
+  <div class="nav-links" id="navLinks">
+    <a onclick="showPage('home')" class="active" id="nav-home">Басты бет</a>
+    <a onclick="showPage('courses')" id="nav-courses">Курстар</a>
+    <a onclick="showPage('pricing')" id="nav-pricing">Баға</a>
+    <a onclick="showPage('about')" id="nav-about">Біз туралы</a>
+    <a onclick="showPage('contact')" class="nav-cta" id="nav-contact">Тіркелу</a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ===== HOME PAGE ===== -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge"><span></span> IT онлайн-курстары платформасы</div>
+      <h1>Кодқа <em>қадам</em> басу оңай бола алады</h1>
+      <p>Қазақ тілінде IT негіздерін үйренетін интерактивті платформа. SQL, Python, деректер аналитикасы — нөлден мамандыққа дейін.</p>
+      <div class="hero-btns">
+        <a class="btn-primary" onclick="showPage('courses')">Курстарды көру</a>
+        <a class="btn-outline" onclick="showPage('about')">Біз туралы</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-card"><div class="num">500+</div><div class="label">Белсенді оқушы</div></div>
+      <div class="stat-card"><div class="num">6</div><div class="label">Курс бағыттары</div></div>
+      <div class="stat-card"><div class="num">100%</div><div class="label">Қазақ тіліндегі контент</div></div>
+    </div>
+  </section>
+
+  <!-- TRUST BAR -->
+  <div class="trust-bar">
+    <div class="trust-item"><span>✅</span> Қазақ тілінде</div>
+    <div class="trust-item"><span>🎓</span> Сертификат беріледі</div>
+    <div class="trust-item"><span>💼</span> Жұмысқа орналасуға көмек</div>
+    <div class="trust-item"><span>🔄</span> Тегін пробный сабақ</div>
+    <div class="trust-item"><span>⭐</span> 4.9 орташа баға</div>
+  </div>
+
+  <!-- POPULAR COURSES -->
+  <section style="background:var(--white)">
+    <span class="section-tag">Курстар</span>
+    <h2>Танымал курстар</h2>
+    <p class="subtitle">Нақты нарық сұранысына негізделген бағдарламалар</p>
+    <div class="courses-grid fade-in" style="margin-top:40px">
+      <div class="course-card" onclick="openModal('python')">
+        <div class="course-thumb python"><span>🐍</span><span class="course-badge hot">🔥 Танымалы</span></div>
+        <div class="course-body">
+          <div class="course-level">Бастаушы → Орта</div>
+          <div class="course-title">Python — нөлден бастап</div>
+          <div class="course-desc">Деректер аналитикасы мен автоматтандыруға арналған Python бағдарламалау тілі.</div>
+          <div class="course-meta">
+            <span>📚 48 сабақ</span>
+            <span>⏱ 60 сағат</span>
+            <span class="stars">★★★★★</span>
+          </div>
+          <div class="course-footer">
+            <div class="course-price"><span class="old-price">39 900₸</span>29 900₸</div>
+            <button class="course-enroll">Жазылу</button>
+          </div>
+        </div>
+      </div>
+      <div class="course-card" onclick="openModal('sql')">
+        <div class="course-thumb sql"><span>🗄️</span><span class="course-badge">Жаңадан</span></div>
+        <div class="course-body">
+          <div class="course-level">Бастаушы</div>
+          <div class="course-title">SQL & Деректер базасы</div>
+          <div class="course-desc">PostgreSQL арқылы деректермен жұмыс, сұраныстар жазу, аналитика.</div>
+          <div class="course-meta">
+            <span>📚 36 сабақ</span>
+            <span>⏱ 40 сағат</span>
+            <span class="stars">★★★★★</span>
+          </div>
+          <div class="course-footer">
+            <div class="course-price"><span class="old-price">29 900₸</span>19 900₸</div>
+            <button class="course-enroll">Жазылу</button>
+          </div>
+        </div>
+      </div>
+      <div class="course-card" onclick="openModal('data')">
+        <div class="course-thumb data"><span>📊</span><span class="course-badge new">Жаңа</span></div>
+        <div class="course-body">
+          <div class="course-level">Орта деңгей</div>
+          <div class="course-title">Деректер аналитикасы</div>
+          <div class="course-desc">Pandas, Matplotlib, Power BI — нақты бизнес деректерін талдау.</div>
+          <div class="course-meta">
+            <span>📚 52 сабақ</span>
+            <span>⏱ 70 сағат</span>
+            <span class="stars">★★★★☆</span>
+          </div>
+          <div class="course-footer">
+            <div class="course-price"><span class="old-price">49 900₸</span>39 900₸</div>
+            <button class="course-enroll">Жазылу</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:36px">
+      <a class="btn-primary" onclick="showPage('courses')" style="font-size:.95rem;padding:13px 36px">Барлық курстарды көру →</a>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <span class="section-tag">Оқу процесі</span>
+    <h2>Қалай жұмыс істейді?</h2>
+    <p class="subtitle">4 қарапайым қадаммен IT мамандығын игеріңіз</p>
+    <div class="steps-row fade-in">
+      <div class="step-item">
+        <div class="step-circle">📝</div>
+        <div class="step-num-label">01 қадам</div>
+        <h3>Тіркелу</h3>
+        <p>Тегін тіркеліп, өзіңізге сәйкес курсты таңдаңыз</p>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">▶️</div>
+        <div class="step-num-label">02 қадам</div>
+        <h3>Оқу</h3>
+        <p>Видео сабақтарды өз қарқыныңызда қараңыз</p>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">💻</div>
+        <div class="step-num-label">03 қадам</div>
+        <h3>Тапсырма</h3>
+        <p>Нақты жобаларды орындап, тренажерде жаттығыңыз</p>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">🏆</div>
+        <div class="step-num-label">04 қадам</div>
+        <h3>Сертификат</h3>
+        <p>Курсты аяқтап, ресми сертификат алыңыз</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS PREVIEW -->
+  <section class="reviews" style="background:var(--bg)">
+    <span class="section-tag">Пікірлер</span>
+    <h2>Оқушылар не дейді?</h2>
+    <p class="subtitle">500+ оқушының нақты тәжірибесі</p>
+    <div class="reviews-grid fade-in">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Python курсын аяқтағаннан кейін 3 айда junior деңгейінде жұмыс таптым. Қазақ тілінде болғандықтан өте жеңіл қабылдадым."</div>
+        <div class="reviewer">
+          <div class="reviewer-avatar">👨‍💼</div>
+          <div><div class="reviewer-name">Айдос Сейітқали</div><div class="reviewer-role">Junior Python Dev @ Kaspi</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"SQL курсы мен мансабымды толығымен өзгертті. Деректер аналитигі ретінде жұмысқа орналастым. Тапсырмалар өте практикалық!"</div>
+        <div class="reviewer">
+          <div class="reviewer-avatar">👩‍💻</div>
+          <div><div class="reviewer-name">Әлия Бекова</div><div class="reviewer-role">Data Analyst @ Halyk</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★☆</div>
+        <div class="review-text">"Мұғалімдер өте жақсы түсіндіреді. Техникалық сұрақтарыма жылдам жауап беріп отырады. Платформаны барлығына ұсынамын!"</div>
+        <div class="reviewer">
+          <div class="reviewer-avatar">👨‍🎓</div>
+          <div><div class="reviewer-name">Нұрлан Әбдіков</div><div class="reviewer-role">Студент, Болашақ аналитик</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>Бүгін бастаңыз!</h2>
+    <p>Тегін пробный сабаққа жазылып, Codestep-тің оқу форматын өз көзіңізбен байқаңыз</p>
+    <div class="cta-form">
+      <input class="cta-input" type="email" placeholder="Email-іңізді енгізіңіз">
+      <button class="btn-primary" onclick="showToast('📩 Сізге хат жіберілді!')">Тегін жазылу</button>
+    </div>
+  </section>
+
+</div><!-- /page-home -->
+
+<!-- ===== COURSES PAGE ===== -->
+<div class="page" id="page-courses">
+  <section style="background:var(--white);padding-top:40px">
+    <span class="section-tag">Барлық курстар</span>
+    <h2>Курстар каталогы</h2>
+    <p class="subtitle">Кез келген деңгейге арналған IT курстары — қазақ тілінде</p>
+    <div class="courses-filters">
+      <button class="filter-btn active" onclick="filterCourses('all',this)">Барлығы</button>
+      <button class="filter-btn" onclick="filterCourses('beginner',this)">Бастаушы</button>
+      <button class="filter-btn" onclick="filterCourses('mid',this)">Орта деңгей</button>
+      <button class="filter-btn" onclick="filterCourses('pro',this)">Кәсіби</button>
+    </div>
+    <div class="courses-grid fade-in" id="coursesGrid">
+      <div class="course-card" data-level="beginner" onclick="openModal('python')">
+        <div class="course-thumb python"><span>🐍</span><span class="course-badge hot">🔥 Танымалы</span></div>
+        <div class="course-body">
+          <div class="course-level">Бастаушы → Орта</div>
+          <div class="course-title">Python — нөлден бастап</div>
+          <div class="course-desc">Деректер аналитикасы мен автоматтандыруға арналған Python бағдарламалау тілі.</div>
+          <div class="course-meta"><span>📚 48 сабақ</span><span>⏱ 60 сағат</span><span class="stars">★★★★★</span></div>
+          <div class="course-footer"><div class="course-price"><span class="old-price">39 900₸</span>29 900₸</div><button class="course-enroll">Жазылу</button></div>
+        </div>
+      </div>
+      <div class="course-card" data-level="beginner" onclick="openModal('sql')">
+        <div class="course-thumb sql"><span>🗄️</span><span class="course-badge">Жаңадан</span></div>
+        <div class="course-body">
+          <div class="course-level">Бастаушы</div>
+          <div class="course-title">SQL & Деректер базасы</div>
+          <div class="course-desc">PostgreSQL арқылы деректермен жұмыс, сұраныстар жазу, аналитика.</div>
+          <div class="course-meta"><span>📚 36 сабақ</span><span>⏱ 40 сағат</span><span class="stars">★★★★★</span></div>
+          <div class="course-footer"><div class="course-price"><span class="old-price">29 900₸</span>19 900₸</div><button class="course-enroll">Жазылу</button></div>
+        </div>
+      </div>
+      <div class="course-card" data-level="mid" onclick="openModal('data')">
+        <div class="course-thumb data"><span>📊</span><span class="course-badge new">Жаңа</span></div>
+        <div class="course-body">
+          <div class="course-level">Орта деңгей</div>
+          <div class="course-title">Деректер аналитикасы</div>
+          <div class="course-desc">Pandas, Matplotlib, Power BI — нақты бизнес деректерін талдау.</div>
+          <div class="course-meta"><span>📚 52 сабақ</span><span>⏱ 70 сағат</span><span class="stars">★★★★☆</span></div>
+          <div class="course-footer"><div class="course-price"><span class="old-price">49 900₸</span>39 900₸</div><button class="course-enroll">Жазылу</button></div>
+        </div>
+      </div>
+      <div class="course-card" data-level="beginner" onclick="openModal('web')">
+        <div class="course-thumb web"><span>🌐</span></div>
+        <div class="course-body">
+          <div class="course-level">Бастаушы</div>
+          <div class="course-title">Веб-әзірлеу: HTML & CSS</div>
+          <div class="course-desc">Заманауи веб-сайттар жасауды нөлден үйреніңіз. Адаптивті дизайн, Flexbox, Grid.</div>
+          <div class="course-meta"><span>📚 40 сабақ</span><span>⏱ 45 сағат</span><span class="stars">★★★★★</span></div>
+          <div class="course-footer"><div class="course-price"><span class="old-price">24 900₸</span>14 900₸</div><button class="course-enroll">Жазылу</button></div>
+        </div>
+      </div>
+      <div class="course-card" data-level="beginner" onclick="openModal('excel')">
+        <div class="course-thumb excel"><span>📈</span></div>
+        <div class="course-body">
+          <div class="course-level">Бастаушы</div>
+          <div class="course-title">Excel — кәсіби деңгейде</div>
+          <div class="course-desc">Кестелер, формулалар, VLOOKUP, Pivot Table — кеңсе жұмысы үшін Excel шебері болыңыз.</div>
+          <div class="course-meta"><span>📚 28 сабақ</span><span>⏱ 30 сағат</span><span class="stars">★★★★★</span></div>
+          <div class="course-footer"><div class="course-price"><span class="old-price">14 900₸</span>9 900₸</div><button class="course-enroll">Жазылу</button></div>
+        </div>
+      </div>
+      <div class="course-card" data-level="pro" onclick="openModal('ai')">
+        <div class="course-thumb ai"><span>🤖</span><span class="course-badge new">Жаңа 2025</span></div>
+        <div class="course-body">
+          <div class="course-level">Кәсіби деңгей</div>
+          <div class="course-title">AI & Machine Learning</div>
+          <div class="course-desc">Scikit-learn, нейрондық желілер, GPT API — жасанды интеллект технологиялары.</div>
+          <div class="course-meta"><span>📚 64 сабақ</span><span>⏱ 90 сағат</span><span class="stars">★★★★☆</span></div>
+          <div class="course-footer"><div class="course-price"><span class="old-price">79 900₸</span>59 900₸</div><button class="course-enroll">Жазылу</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTRUCTORS -->
+  <section class="instructors">
+    <span class="section-tag">Оқытушылар</span>
+    <h2>Тәжірибелі мұғалімдер</h2>
+    <p class="subtitle">Нақты IT компанияларда жұмыс тәжірибесі бар мамандар</p>
+    <div class="instructors-grid fade-in">
+      <div class="instructor-card">
+        <div class="instructor-avatar">👨‍💻</div>
+        <div class="instructor-name">Мауетеков Алмат</div>
+        <div class="instructor-title">Python & Data Science сарапшысы</div>
+        <div class="instructor-bio">Kaspi Bank-та 5 жыл Data Engineer ретінде жұмыс жасады. 200+ оқушыны Python-ға үйретті.</div>
+        <div class="instructor-stats">
+          <div class="instructor-stat"><span>200+</span><p>Оқушы</p></div>
+          <div class="instructor-stat"><span>4.9★</span><p>Баға</p></div>
+          <div class="instructor-stat"><span>5 жыл</span><p>Тәжірибе</p></div>
+        </div>
+      </div>
+      <div class="instructor-card">
+        <div class="instructor-avatar">👩‍🏫</div>
+        <div class="instructor-name">Оджахлиев Чингиз</div>
+        <div class="instructor-title">SQL & BI аналитик</div>
+        <div class="instructor-bio">Freedom Finance-та 4 жыл аналитик. SQL, Tableau, Power BI — оқушыларды нарықтағы сұраныстарға дайындайды.</div>
+        <div class="instructor-stats">
+          <div class="instructor-stat"><span>180+</span><p>Оқушы</p></div>
+          <div class="instructor-stat"><span>4.8★</span><p>Баға</p></div>
+          <div class="instructor-stat"><span>4 жыл</span><p>Тәжірибе</p></div>
+        </div>
+      </div>
+      <div class="instructor-card">
+        <div class="instructor-avatar">👨‍🎓</div>
+        <div class="instructor-name">Халмұрат Диас</div>
+        <div class="instructor-title">Веб-әзірлеу жетекшісі</div>
+        <div class="instructor-bio">Фриланс веб-разработчик, 50+ коммерциялық жоба. HTML/CSS/JS, React бойынша тереңдетілген курстар өткізеді.</div>
+        <div class="instructor-stats">
+          <div class="instructor-stat"><span>120+</span><p>Оқушы</p></div>
+          <div class="instructor-stat"><span>4.9★</span><p>Баға</p></div>
+          <div class="instructor-stat"><span>6 жыл</span><p>Тәжірибе</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-courses -->
+
+<!-- ===== PRICING PAGE ===== -->
+<div class="page" id="page-pricing">
+  <section style="background:var(--white);padding-top:40px">
+    <span class="section-tag">Баға</span>
+    <h2>Қолжетімді бағалар</h2>
+    <p class="subtitle">Өзіңізге сәйкес жоспарды таңдаңыз. Кез келген уақытта бас тартуға болады.</p>
+    <div class="pricing-grid fade-in">
+      <div class="price-card">
+        <div class="price-name">Бастаушы</div>
+        <div class="price-desc">Жекелеген курстарды сатып алу</div>
+        <div class="price-amount"><sup>бастап</sup> 9 900₸</div>
+        <div class="price-period">курс үшін бір рет төлем</div>
+        <ul class="price-features">
+          <li>Таңдаған 1 курсқа қолжетімділік</li>
+          <li>Курс материалдарын жүктеу</li>
+          <li>Сертификат (курс аяқталғанда)</li>
+          <li>30 күн қайтарым кепілдігі</li>
+          <li class="no">Барлық курстарға қолжетімділік жоқ</li>
+          <li class="no">Тікелей эфирлер жоқ</li>
+          <li class="no">Менторлық қолдау жоқ</li>
+        </ul>
+        <button class="btn-price ghost" onclick="showPage('courses')">Курс таңдау</button>
+      </div>
+      <div class="price-card popular">
+        <div class="price-name">Pro</div>
+        <div class="price-desc">Ең танымалы — барлық курстарға жол</div>
+        <div class="price-amount"><sup>₸</sup>14 900</div>
+        <div class="price-period">айына / жазылым</div>
+        <ul class="price-features">
+          <li>Барлық курстарға шексіз қолжетімділік</li>
+          <li>Жаңа курстар автоматты қосылады</li>
+          <li>Сертификаттар</li>
+          <li>Апталық тікелей эфирлер</li>
+          <li>Telegram-топта қолдау</li>
+          <li>Менторлармен 2 сессия/ай</li>
+          <li class="no">Жеке ментор жоқ</li>
+        </ul>
+        <button class="btn-price solid" onclick="showModal(); showToast('🎉 Pro жоспарына тіркеліп жатырсыз!')">Бастау — ₸14 900/ай</button>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Корпоратив</div>
+        <div class="price-desc">Команда немесе компания үшін</div>
+        <div class="price-amount">Жеке</div>
+        <div class="price-period">ұсыныс / қоңырау шалыңыз</div>
+        <ul class="price-features">
+          <li>5+ қызметкерге арналған оқыту</li>
+          <li>Жеке оқу бағдарламасы</li>
+          <li>Прогресті бақылау панелі</li>
+          <li>Корпоративтік сертификаттар</li>
+          <li>Жеке ментор</li>
+          <li>Офлайн воркшоптар (сұраныс бойынша)</li>
+          <li>Ай сайын есеп беру</li>
+        </ul>
+        <button class="btn-price ghost" onclick="showPage('contact')">Бізбен байланысу</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq">
+    <span class="section-tag">Сұрақтар</span>
+    <h2>Жиі қойылатын сұрақтар</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Тегін пробный сабақ бар ма? <span class="arrow">▼</span></div>
+        <div class="faq-a">Иә! Барлық курстардың алғашқы 3 сабағы тегін қолжетімді. Сатып алмай-ақ форматты байқай аласыз.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Сертификат қалай алынады? <span class="arrow">▼</span></div>
+        <div class="faq-a">Курстың барлық сабақтарын аяқтап, финалдық тапсырманы тапсырғаннан кейін PDF форматтағы ресми сертификат автоматты жіберіледі. Сертификаттар LinkedIn-ге қосуға болады.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Жазылымды болдырмауға бола ма? <span class="arrow">▼</span></div>
+        <div class="faq-a">Иә, кез келген уақытта жазылымды болдырмауға болады. Ай соңына дейін қолжетімділік сақталады. 30 күн ішінде толық қайтарым кепілдігі бар.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Мобильде оқуға бола ма? <span class="arrow">▼</span></div>
+        <div class="faq-a">Иә, платформа толық мобильдік. Телефон, планшет, компьютер — кез келген құрылғыдан оқи аласыз. Видеоларды офлайн режимде жүктеуге де болады.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Жұмысқа орналасуға көмек бар ма? <span class="arrow">▼</span></div>
+        <div class="faq-a">Pro жоспарында менторлармен кеңес сессиялары, резюме тексеру, LinkedIn профилін оңтайландыру кіреді. Сонымен қатар серіктес IT компаниялардың вакансия базасына қолжетімділік беріледі.</div>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-pricing -->
+
+<!-- ===== ABOUT PAGE ===== -->
+<div class="page" id="page-about">
+  <div class="about-hero">
+    <h1>Codestep туралы</h1>
+    <p>Қазақстандықтарды IT саласына қадам басуға көмектесетін платформа — қазақ тілінде, нақты тәжірибемен.</p>
+  </div>
+
+  <div class="stats-section">
+    <div class="stats-row">
+      <div class="stat-big"><div class="num">500+</div><p>Белсенді оқушы</p></div>
+      <div class="stat-big"><div class="num">6</div><p>Бағыт бойынша курс</p></div>
+      <div class="stat-big"><div class="num">87%</div><p>Жұмысқа орналасу</p></div>
+      <div class="stat-big"><div class="num">4.9★</div><p>Орташа баға</p></div>
+    </div>
+  </div>
+
+  <div class="about-section">
+    <span class="section-tag">Миссиямыз</span>
+    <h2>Неліктен Codestep?</h2>
+    <div class="about-grid fade-in">
+      <div>
+        <p class="subtitle" style="margin-bottom:24px">IT саласы жылдам өсуде, бірақ қазақ тілінде сапалы, жүйелі білім беру ресурстары әлі де жетіспейді. Codestep — осы олқылықты жою үшін жасалған.</p>
+        <div class="value-list">
+          <div class="value-item">
+            <div class="value-icon">🎯</div>
+            <div><h3>Тәжірибеге бағыттайды</h3><p>Оқушы тек теория оқып қоймай, арнайы тренажерлерде SQL сұраныстарын жазып, код жаттығуларын бірден орындайды.</p></div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">🧩</div>
+            <div><h3>Күрделіні қарапайым етеді</h3><p>Мәліметтер базасымен жұмыс істеуді және логикалық алгоритмдерді нөлден бастап меңгертеді.</p></div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">📊</div>
+            <div><h3>Прогресті қадағалайды</h3><p>Әр оқушының жетістігін автоматты түрде бағалап, қателері бойынша жеке ұсыныстар береді.</p></div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">💼</div>
+            <div><h3>Жұмысқа дайындайды</h3><p>Курс соңында портфолиода нақты жобалар дайын болады. Серіктес компаниялар арқылы жұмысқа жол ашылады.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="about-visual">
+        <h3>Негізгі құндылықтар</h3>
+        <div class="feature-pills">
+          <div class="pill"><div class="pill-dot"></div><span><strong>Қолжетімділік:</strong> Кез келген өңірден, кез келген уақытта сапалы білім алу</span></div>
+          <div class="pill"><div class="pill-dot"></div><span><strong>Ана тіліндегі контент:</strong> IT негіздерін қазақ тілінде терең түсіндіру</span></div>
+          <div class="pill"><div class="pill-dot"></div><span><strong>Нәтижеге бағытталу:</strong> Курс соңында портфолиода нақты жобалар</span></div>
+          <div class="pill"><div class="pill-dot"></div><span><strong>Автоматтандыру:</strong> Тапсырмаларды автоматты түрде тексеретін жүйе</span></div>
+          <div class="pill"><div class="pill-dot"></div><span><strong>Қауымдастық:</strong> Оқушылар арасындағы Telegram-топ желісі</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team -->
+  <section style="background:var(--bg)">
+    <span class="section-tag">Команда</span>
+    <h2>Ұйымдық құрылым</h2>
+    <p class="subtitle">Рөлдер мен жауапкершіліктер</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:44px" class="fade-in" id="teamGrid">
+      <div style="background:var(--white);border-radius:20px;padding:26px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.05)">
+        <div style="width:68px;height:68px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,var(--teal-dark),var(--teal-light));display:flex;align-items:center;justify-content:center;font-size:1.9rem">👑</div>
+        <div style="font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;color:var(--teal-dark);margin-bottom:6px">Founder / CEO</div>
+        <div style="font-size:.8rem;color:var(--text-muted);line-height:1.5">Стратегиялық жоспарлау, серіктестіктер, қаржылық шешімдер.</div>
+      </div>
+      <div style="background:var(--white);border-radius:20px;padding:26px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.05)">
+        <div style="width:68px;height:68px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,var(--teal-dark),var(--teal-light));display:flex;align-items:center;justify-content:center;font-size:1.9rem">📣</div>
+        <div style="font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;color:var(--teal-dark);margin-bottom:6px">Marketing Manager</div>
+        <div style="font-size:.8rem;color:var(--text-muted);line-height:1.5">Науқандарды басқару, контент, блогерлермен жұмыс.</div>
+      </div>
+      <div style="background:var(--white);border-radius:20px;padding:26px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.05)">
+        <div style="width:68px;height:68px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,var(--teal-dark),var(--teal-light));display:flex;align-items:center;justify-content:center;font-size:1.9rem">👩‍🏫</div>
+        <div style="font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;color:var(--teal-dark);margin-bottom:6px">IT Instructor ×2</div>
+        <div style="font-size:.8rem;color:var(--text-muted);line-height:1.5">Курстарды өткізу, оқу бағдарламасын әзірлеу, студент прогресі.</div>
+      </div>
+      <div style="background:var(--white);border-radius:20px;padding:26px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.05)">
+        <div style="width:68px;height:68px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,var(--teal-dark),var(--teal-light));display:flex;align-items:center;justify-content:center;font-size:1.9rem">⚙️</div>
+        <div style="font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;color:var(--teal-dark);margin-bottom:6px">Platform Developer</div>
+        <div style="font-size:.8rem;color:var(--text-muted);line-height:1.5">Оқу платформасын, тіркеу және төлем жүйесін қолдау.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Codestep-ке қосылыңыз</h2>
+    <p>Бағдарламалауды қадам-қадаммен үйрену — бүгін басталады</p>
+    <a class="btn-primary" onclick="showPage('contact')" style="font-size:1.05rem;padding:15px 40px">Тіркелу →</a>
+  </section>
+</div><!-- /page-about -->
+
+<!-- ===== CONTACT PAGE ===== -->
+<div class="page" id="page-contact">
+  <div class="contact-page">
+    <span class="section-tag">Байланыс</span>
+    <h1>Бізбен хабарласыңыз</h1>
+    <p class="subtitle">Сұрақтарыңызға 24 сағат ішінде жауап береміз</p>
+    <div class="contact-grid fade-in">
+      <div class="contact-form">
+        <h3 style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;color:var(--teal-dark);margin-bottom:24px">Форманы толтырыңыз</h3>
+        <div class="form-group">
+          <label>Атыңыз *</label>
+          <input type="text" placeholder="Атыңызды енгізіңіз" id="contactName">
+        </div>
+        <div class="form-group">
+          <label>Email немесе телефон *</label>
+          <input type="text" placeholder="example@mail.com немесе +7 7XX XXX XX XX" id="contactEmail">
+        </div>
+        <div class="form-group">
+          <label>Сізді не қызықтырады?</label>
+          <select id="contactCourse">
+            <option>Python курсы</option>
+            <option>SQL курсы</option>
+            <option>Деректер аналитикасы</option>
+            <option>Веб-әзірлеу</option>
+            <option>AI & Machine Learning</option>
+            <option>Pro жазылымы</option>
+            <option>Корпоративтік оқыту</option>
+            <option>Басқа сұрақ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Хабарламаңыз</label>
+          <textarea placeholder="Сұрағыңызды немесе пікіріңізді жазыңыз..." id="contactMsg"></textarea>
+        </div>
+        <button class="form-submit" onclick="submitForm()">Жіберу →</button>
+      </div>
+      <div class="contact-info">
+        <div class="contact-info-card">
+          <h3>📍 Байланыс мәліметтері</h3>
+          <div class="contact-detail"><span>📧</span> hello@codestep.kz</div>
+          <div class="contact-detail"><span>📱</span> +7 (700) 123-45-67</div>
+          <div class="contact-detail"><span>🕐</span> Дүйс–Жұма: 09:00–18:00</div>
+          <div class="contact-detail"><span>📍</span> Алматы, Қазақстан</div>
+        </div>
+        <div class="contact-info-card">
+          <h3>📲 Әлеуметтік желілер</h3>
+          <p style="font-size:.84rem;color:var(--text-muted);margin-bottom:14px">Бізді Instagram, Telegram және TikTok-та табыңыз — тегін сабақтар мен жаңалықтар</p>
+          <div class="social-links">
+            <div class="social-link" onclick="showToast('Instagram ашылуда...')">📸</div>
+            <div class="social-link" onclick="showToast('Telegram ашылуда...')">✈️</div>
+            <div class="social-link" onclick="showToast('TikTok ашылуда...')">🎵</div>
+            <div class="social-link" onclick="showToast('YouTube ашылуда...')">▶️</div>
+          </div>
+        </div>
+        <div class="contact-info-card" style="background:linear-gradient(135deg,var(--teal-dark),var(--teal));color:#fff">
+          <h3 style="color:#fff;margin-bottom:10px">🎁 Тегін пробный сабақ</h3>
+          <p style="font-size:.84rem;opacity:.85;margin-bottom:16px">Бүгін тіркеліп, кез келген курстың алғашқы 3 сабағын тегін алыңыз!</p>
+          <button class="btn-primary" onclick="showToast('🎉 Тіркелдіңіз! Хат жіберілді.')" style="width:100%;text-align:center">Тегін бастау</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /page-contact -->
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="nav-logo footer-logo" onclick="showPage('home')" style="margin-bottom:12px">
+        <svg viewBox="0 0 40 40" fill="none" width="28" height="28">
+          <circle cx="20" cy="20" r="19" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+          <path d="M12 16 L8 20 L12 24" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M28 16 L32 20 L28 24" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M22 12 L18 28" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        CODESTEP
+      </a>
+      <p>Қазақ тілінде IT білім беретін онлайн платформа. Нөлден мамандыққа дейін — бірге жүреміз.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Курстар</h4>
+      <a onclick="showPage('courses')">Python</a>
+      <a onclick="showPage('courses')">SQL</a>
+      <a onclick="showPage('courses')">Деректер аналитикасы</a>
+      <a onclick="showPage('courses')">Веб-әзірлеу</a>
+      <a onclick="showPage('courses')">AI & ML</a>
+    </div>
+    <div class="footer-col">
+      <h4>Платформа</h4>
+      <a onclick="showPage('about')">Біз туралы</a>
+      <a onclick="showPage('pricing')">Баға</a>
+      <a onclick="showPage('about')">Оқытушылар</a>
+      <a onclick="showPage('contact')">Байланыс</a>
+    </div>
+    <div class="footer-col">
+      <h4>Қолдау</h4>
+      <a onclick="showPage('pricing')">FAQ</a>
+      <a onclick="showToast('Telegram-топ ашылуда...')">Telegram-топ</a>
+      <a onclick="showToast('📧 hello@codestep.kz')">Email қолдауы</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-logo-text">CODESTEP</span>
+    <span>© 2025 Codestep. Барлық құқықтар қорғалған.</span>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalContent"></div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="showToast('🎉 Сізді тіркедік! Хат жіберілді.'); closeModal()">Жазылу →</button>
+      <button class="btn-outline2" onclick="showToast('📩 Тегін сабақ хатқа жіберілді!'); closeModal()">Тегін сабақ алу</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const courses = {
+    python:{title:'Python — нөлден бастап',badge:'Бастаушы → Орта',desc:'Деректер аналитикасы мен автоматтандыруға арналған Python. 48 сабақ, 60 сағат, нақты жобалар.',price:'29 900₸',old:'39 900₸'},
+    sql:{title:'SQL & Деректер базасы',badge:'Бастаушы',desc:'PostgreSQL арқылы деректермен жұмыс. 36 сабақ, 40 сағат, нақты аналитикалық тапсырмалар.',price:'19 900₸',old:'29 900₸'},
+    data:{title:'Деректер аналитикасы',badge:'Орта деңгей',desc:'Pandas, Matplotlib, Power BI. 52 сабақ, 70 сағат, реал бизнес деректерімен жұмыс.',price:'39 900₸',old:'49 900₸'},
+    web:{title:'Веб-әзірлеу: HTML & CSS',badge:'Бастаушы',desc:'Заманауи сайттар жасауды үйреніңіз. 40 сабақ, 45 сағат, адаптивті дизайн.',price:'14 900₸',old:'24 900₸'},
+    excel:{title:'Excel — кәсіби деңгейде',badge:'Бастаушы',desc:'Формулалар, Pivot Table, деректер талдауы. 28 сабақ, 30 сағат.',price:'9 900₸',old:'14 900₸'},
+    ai:{title:'AI & Machine Learning',badge:'Кәсіби деңгей',desc:'Scikit-learn, нейрондық желілер, GPT API. 64 сабақ, 90 сағат.',price:'59 900₸',old:'79 900₸'}
+  };
+
+  function openModal(key){
+    const c = courses[key];
+    document.getElementById('modalContent').innerHTML = `
+      <h2>${c.title}</h2>
+      <span class="course-info-badge">${c.badge}</span>
+      <p>${c.desc}</p>
+      <div class="price-tag"><span class="old">${c.old}</span>${c.price}</div>
+      <p style="font-size:.78rem;color:var(--text-muted);margin-top:4px">✓ 30 күн қайтарым кепілдігі &nbsp; ✓ Сертификат беріледі</p>
+    `;
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  function showModal(){
+    document.getElementById('modalContent').innerHTML = `
+      <h2>Pro жазылымы</h2>
+      <span class="course-info-badge">Барлық курстар</span>
+      <p>Барлық курстарға шексіз қолжетімділік, апталық тікелей эфирлер, менторлармен 2 сессия/ай.</p>
+      <div class="price-tag">14 900₸<span style="font-size:1rem;font-weight:400;font-family:'DM Sans',sans-serif;color:var(--text-muted)">/ай</span></div>
+    `;
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
+  function closeModalOutside(e){ if(e.target===document.getElementById('modalOverlay')) closeModal(); }
+
+  function showPage(page){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-'+page).classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+    const nav = document.getElementById('nav-'+page);
+    if(nav) nav.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+    document.getElementById('navLinks').classList.remove('open');
+    // re-trigger animations
+    setTimeout(()=>{
+      document.querySelectorAll('#page-'+page+' .fade-in').forEach(el=>{
+        el.classList.remove('visible');
+        setTimeout(()=>el.classList.add('visible'),100);
+      });
+    },50);
+  }
+
+  function toggleMenu(){
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+
+  function filterCourses(level, btn){
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#coursesGrid .course-card').forEach(card=>{
+      if(level==='all'||card.dataset.level===level){
+        card.style.display='';
+      } else {
+        card.style.display='none';
+      }
+    });
+  }
+
+  function toggleFaq(el){
+    const item = el.parentElement;
+    item.classList.toggle('open');
+  }
+
+  let toastTimer;
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>t.classList.remove('show'), 3200);
+  }
+
+  function submitForm(){
+    const name = document.getElementById('contactName').value.trim();
+    if(!name){ showToast('⚠️ Атыңызды енгізіңіз'); return; }
+    showToast('✅ Хабарламаңыз жіберілді! Жауап күтіңіз.');
+    ['contactName','contactEmail','contactMsg'].forEach(id=>document.getElementById(id).value='');
+  }
+
+  // Intersection Observer for animations
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting) e.target.classList.add('visible');});
+  },{threshold:0.08});
+  function initObs(){
+    document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+  }
+  initObs();
+  // init home page animations
+  setTimeout(()=>{
+    document.querySelectorAll('#page-home .fade-in').forEach(el=>el.classList.add('visible'));
+  },200);
+</script>
+</body>
+</html>
