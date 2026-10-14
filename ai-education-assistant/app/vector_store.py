@@ -22,10 +22,10 @@ class VectorStore:
         self.compatible = True
         pointer = directory / 'current.json'
         if pointer.exists():
-            generation = json.loads(pointer.read_text())['generation']
+            generation = json.loads(pointer.read_text(encoding='utf-8'))['generation']
             if not isinstance(generation, str) or not generation.isalnum():
                 raise ValueError('Индекс манифесі жарамсыз.')
-            metadata = json.loads((directory / f'{generation}.json').read_text())
+            metadata = json.loads((directory / f'{generation}.json').read_text(encoding='utf-8'))
             self.documents, self.chunks = metadata['documents'], metadata['chunks']
             self.vectors = np.load(directory / f'{generation}.npy', allow_pickle=False)
             self.compatible = metadata['signature'] == signature
