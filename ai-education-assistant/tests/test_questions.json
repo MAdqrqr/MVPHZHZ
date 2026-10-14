@@ -1,0 +1,22 @@
+[
+  {"id":1,"category":"direct","question":"RAG қысқартуы қалай ашылады?","expected_answer":"Retrieval-Augmented Generation, іздеу арқылы толықтырылған генерация.","expected_pages":[1]},
+  {"id":2,"category":"direct","question":"Прототиптің бастапқы chunk көлемі мен overlap мәні қандай?","expected_answer":"450 токен және 90 токен.","expected_pages":[2]},
+  {"id":3,"category":"direct","question":"Бастапқы top-k неше?","expected_answer":"5.","expected_pages":[2]},
+  {"id":4,"category":"direct","question":"Дұрыстықты бағалау шкаласында 2 балл нені білдіреді?","expected_answer":"Толық дұрыс жауап.","expected_pages":[4]},
+  {"id":5,"category":"multi","question":"PDF жүктелгеннен жауап генерациясына дейін қандай негізгі қадамдар орындалады?","expected_answer":"PDF мәтінін алу, бет метадеректері, chunking, embedding, FAISS іздеу, үзінділерді LLM контекстіне беру.","expected_pages":[1,2]},
+  {"id":6,"category":"multi","question":"Embedding пен FAISS бірлесіп қалай жұмыс істейді?","expected_answer":"Embedding мәтінді векторға айналдырады; FAISS сұрақ векторына ұқсас құжат векторларын іздейді.","expected_pages":[1,3]},
+  {"id":7,"category":"multi","question":"Неліктен ұқсастықтың жоғары болуы жауаптың дұрыстығын толық кепілдендірмейді?","expected_answer":"Ұқсастық тек байланысты үзіндіні табады; жауаптың қолдауы мен дұрыстығы бөлек бағаланады.","expected_pages":[3,4]},
+  {"id":8,"category":"multi","question":"RAG зерттеуінде әділ салыстыру үшін қандай параметрлер бірдей болуы керек?","expected_answer":"Сұрақтар, LLM, temperature 0, жауап көлемі бірдей; өзгеріс — контексттің берілуі.","expected_pages":[1,4]},
+  {"id":9,"category":"term","question":"Embedding дегеніміз не?","expected_answer":"Мәтін мағынасын бейнелейтін сандық вектор.","expected_pages":[1]},
+  {"id":10,"category":"term","question":"Chunking және overlap ұғымдарын түсіндір.","expected_answer":"Chunking мәтінді бөледі; overlap көршілес бөліктерде токендерді қайталайды.","expected_pages":[2]},
+  {"id":11,"category":"term","question":"Top-k параметрі нені басқарады?","expected_answer":"Іздеуден алынатын үзінділер саны.","expected_pages":[2]},
+  {"id":12,"category":"term","question":"Негізсіз нақты факт дегеніміз не?","expected_answer":"Материалмен расталмайтын нақты тұжырым.","expected_pages":[4]},
+  {"id":13,"category":"absent","question":"Университет ректорының аты кім?","expected_answer":"Берілген оқу материалында жауап жоқ.","expected_pages":[]},
+  {"id":14,"category":"absent","question":"Келесі семестрдің оқу ақысы қанша теңге?","expected_answer":"Материалда көрсетілмеген.","expected_pages":[]},
+  {"id":15,"category":"absent","question":"Біздің емтихан нақты қай күні өтеді?","expected_answer":"Құжатта емтихан күні жоқ.","expected_pages":[]},
+  {"id":16,"category":"absent","question":"Осы университетте қанша студент оқиды?","expected_answer":"Мұндай дерек жоқ.","expected_pages":[]},
+  {"id":17,"category":"russian_source","question":"Орысша материал бойынша IndexFlatIP қандай іздеу орындайды?","expected_answer":"Скаляр көбейтінді бойынша дәл іздеу.","expected_pages":[3]},
+  {"id":18,"category":"russian_source","question":"Embedding моделі өзгерсе, индексті неге қайта құру керек?","expected_answer":"Әртүрлі модель векторларын араластыруға болмайды.","expected_pages":[3]},
+  {"id":19,"category":"russian_source","question":"Как обнаружить повторную загрузку PDF? Қазақша жауап бер.","expected_answer":"Файл байттарының SHA-256 хэші арқылы.","expected_pages":[3]},
+  {"id":20,"category":"russian_source","question":"Құжатты жойғанда FAISS векторларымен не істеу керек?","expected_answer":"Осы құжатқа тиесілі барлық векторларды жою керек.","expected_pages":[3]}
+]

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Білім AI — оқу материалдарыңызға сүйенген ассистент</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/script.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="Білім AI басты беті"><span class="brand-symbol">Б</span><span>Білім<span class="brand-ai">AI</span></span></a>
+    <button id="newChat" class="new-chat">＋ Жаңа диалог</button>
+    <div class="section-heading"><h2>Оқу материалдары</h2><span id="documentCount">0</span></div>
+    <p class="sidebar-hint">Дәріс немесе оқулық жүктеңіз. Жауаптар осы материалдарға сүйенеді.</p>
+    <label class="upload-zone" for="pdfFile"><span class="upload-icon">↑</span><strong>PDF жүктеу</strong><span id="uploadLimit">20 МБ-қа дейін</span></label>
+    <input id="pdfFile" type="file" accept=".pdf,application/pdf" hidden>
+    <p id="uploadStatus" class="operation-status" role="status" aria-live="polite"></p>
+    <ul id="documentList" class="document-list"></ul>
+    <button id="reindex" class="text-button">↻ Индексті қайта құру</button>
+    <div class="sidebar-bottom"><span class="privacy-dot"></span><div><strong>Жергілікті прототип</strong><p>Жүктелген үзінділер жауап беру үшін LLM провайдеріне жіберіледі.</p></div></div>
+  </aside>
+  <main>
+    <header class="topbar"><div><span class="eyebrow">СІЗДІҢ ОҚУ СЕРІГІҢІЗ</span><h1>AI-ассистент</h1></div><span class="status-badge" id="serverStatus">Қосылуда…</span></header>
+    <div id="configNotice" class="notice" role="status" hidden></div>
+    <section class="conversation" aria-label="Ассистентпен диалог">
+      <div id="welcome" class="welcome">
+        <div class="welcome-symbol">✦</div><span class="eyebrow">БІЛІМГЕ БІР ҚАДАМ ЖАҚЫН</span>
+        <h2>Бірге түсініп көрейік.</h2><p>Оқу материалыңызды жүктеп, сұрақ қойыңыз.<br>Күрделі ұғымдарды түсіндіремін, дереккөзді көрсетемін.</p>
+        <div class="suggestions"><button data-question="Жүктелген материалдың негізгі ұғымдарын түсіндір."><span>01</span><strong>Негізгі ұғымдар</strong><small>Маңызды терминдерді түсіну</small></button><button data-question="Оқу материалындағы негізгі идеяларды қысқаша қорытындыла."><span>02</span><strong>Дәрісті қайталау</strong><small>Негізгі ойларды жүйелеу</small></button><button data-question="Оқу материалы бойынша емтиханға дайындалу үшін бес сұрақ пен жауап құрастыр."><span>03</span><strong>Емтиханға дайындық</strong><small>Біліміңізді тексеру</small></button></div>
+        <div class="source-note">◈ Әр жауаптың негізі — сіздің оқу материалдарыңыз</div>
+      </div>
+      <div id="messages" aria-live="polite" aria-relevant="additions"></div>
+    </section>
+    <div class="composer-wrap"><form id="chatForm" class="composer"><label class="sr-only" for="question">Сұрағыңыз</label><textarea id="question" rows="1" maxlength="2000" placeholder="Оқу материалы бойынша сұрағыңызды жазыңыз…" required></textarea><button id="send" type="submit" aria-label="Сұрақты жіберу">↑</button></form><p class="composer-hint">Жауапты бастапқы дереккөзбен тексеріңіз. Ассистент қателесуі мүмкін.</p><p class="conversation-note">Жаңа диалог чат көрінісін тазалайды. Әр сұрақ жеке өңделеді; құжаттар сақталады.</p></div>
+  </main>
+</body>
+</html>
