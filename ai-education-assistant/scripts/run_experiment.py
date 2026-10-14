@@ -67,7 +67,7 @@ def run(output):
                 row['error'] = error.code
                 writer.writerow(row); file.flush()
                 print(f"Сұрақ {q['id']}: {error.code}")
-                if error.code in {'llm_access', 'llm_rate_limit', 'llm_not_configured', 'embedding_unavailable'}:
+                if error.code in {'llm_access', 'llm_rate_limit', 'llm_quota', 'llm_not_configured', 'embedding_unavailable'}:
                     raise
                 continue
             writer.writerow(row); file.flush()

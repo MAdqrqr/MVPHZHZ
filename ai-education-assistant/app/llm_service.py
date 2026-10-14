@@ -36,7 +36,21 @@ class LLMService:
                     json={'model': self.settings.llm_model, 'messages': messages,
                           'temperature': 0, 'max_tokens': 1000})
             if response.status_code == 429:
-                raise ServiceError(429, 'llm_rate_limit', 'Модель сұрау лимитіне жетті. Кейінірек қайталаңыз.')
+                # 429 квота біткенде де, сұрау жиілігі асқанда да беріледі.
+                error_code = error_type = None
+                try:
+                    payload = response.json()
+                    error = payload.get('error') if isinstance(payload, dict) else None
+                    if isinstance(error, dict):
+                        error_code, error_type = error.get('code'), error.get('type')
+                except ValueError:
+                    pass
+                quota_codes = ('insufficient_quota', 'billing_hard_limit_reached')
+                if error_code in quota_codes or error_type in quota_codes:
+                    raise ServiceError(429, 'llm_quota', 'LLM API балансы немесе квотасы жеткіліксіз. Провайдердегі төлем баптаулары мен пайдалану шегін тексеріңіз. Күту бұл қатені шешпеуі мүмкін.')
+                if error_code == 'rate_limit_exceeded' or error_type == 'rate_limit_exceeded':
+                    raise ServiceError(429, 'llm_rate_limit', 'API сұрау жиілігінің шегіне жетті. Біраз күтіп, сұрауларды сиретіп қайталаңыз.')
+                raise ServiceError(429, 'llm_rate_limit', 'LLM API 429 шектеуін қайтарды. Провайдердегі API балансын, квотаны және сұрау жиілігінің шегін тексеріңіз.')
             if response.status_code in {401, 403}:
                 raise ServiceError(502, 'llm_access', 'LLM қызметіне қолжетімділік жоқ. Сервердегі кілт пен желі рұқсатын тексеріңіз.')
             if not response.is_success:

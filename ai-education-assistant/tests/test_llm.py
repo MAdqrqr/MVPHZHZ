@@ -31,6 +31,24 @@ def test_timeout(tmp_path):
     assert error.value.status == 504
 
 
+@pytest.mark.parametrize('body,expected_code', [
+    ({'error': {'code': 'insufficient_quota', 'message': 'test-secret'}}, 'llm_quota'),
+    ({'error': {'type': 'insufficient_quota'}}, 'llm_quota'),
+    ({'error': {'code': 'billing_hard_limit_reached'}}, 'llm_quota'),
+    ({'error': {'code': 'rate_limit_exceeded'}}, 'llm_rate_limit'),
+    ({'error': None}, 'llm_rate_limit'),
+    ([], 'llm_rate_limit'),
+])
+def test_429_distinguishes_quota_from_request_rate(tmp_path, body, expected_code):
+    service = LLMService(Settings(data_dir=tmp_path, llm_api_key='test-secret'))
+    with patch('httpx.Client.post', return_value=httpx.Response(429, json=body)):
+        with pytest.raises(ServiceError) as error:
+            service.generate('question')
+    assert error.value.status == 429
+    assert error.value.code == expected_code
+    assert 'test-secret' not in str(error.value)
+
+
 @pytest.mark.parametrize('body', [{'choices': []}, {'choices': [{'message': {'content': ''}}]}, {}])
 def test_malformed_or_empty_answer(tmp_path, body):
     with patch('httpx.Client.post', return_value=httpx.Response(200, json=body)):
